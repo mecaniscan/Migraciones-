@@ -1,0 +1,72 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isWorkshopOwner(workshopId) {
+      return isSignedIn() && get(/databases/$(database)/documents/workshops/$(workshopId)).data.ownerId == request.auth.uid;
+    }
+    
+    match /users/{userId} {
+      allow create: if isOwner(userId);
+      allow read, update, delete: if isOwner(userId);
+      
+      match /oilChanges/{oilChangeId} {
+        allow read, list, create, update, delete: if isOwner(userId);
+      }
+
+      match /favorites/{favWorkshopId} {
+          allow read, list, create, delete: if isOwner(userId);
+      }
+      
+      match /vehicles/{vehicleId} {
+        allow read, list, create, update, delete: if isOwner(userId);
+      }
+    }
+
+    match /workshops/{workshopId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      
+      // Permitir actualización del dueño o actualización pública estrictamente de estadísticas de reseñas.
+      // Se utiliza una validación más robusta para los campos permitidos.
+      allow update: if isSignedIn() && (
+        isOwner(resource.data.ownerId) || 
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reviewCount', 'averageRating'])
+        )
+      );
+      
+      allow delete: if isOwner(resource.data.ownerId);
+
+      match /services/{serviceId} {
+        allow list, get: if true;
+        allow create, update, delete: if isWorkshopOwner(workshopId);
+      }
+      
+      match /reviews/{reviewUserId} {
+        allow list, get: if true;
+        allow create, update, delete: if isSignedIn() && request.auth.uid == reviewUserId;
+      }
+    }
+    
+    match /appointments/{appointmentId} {
+        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+        allow read, update, delete: if isSignedIn() && (request.auth.uid == resource.data.userId || isWorkshopOwner(resource.data.workshopId));
+    }
+
+    match /marketplace/{marketVehicleId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+  }
+}

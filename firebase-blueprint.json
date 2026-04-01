@@ -1,0 +1,212 @@
+
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "type": "object",
+      "description": "Represents a user's profile information.",
+      "properties": {
+        "id": { "type": "string" },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "whatsappNumber": { "type": "string" }
+      },
+      "required": ["id", "firstName", "lastName", "email"]
+    },
+    "Workshop": {
+      "title": "Workshop",
+      "type": "object",
+      "description": "Represents a mechanical workshop.",
+      "properties": {
+        "id": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "address": { "type": "string" },
+        "contactNumber": { "type": "string" },
+        "whatsappNumber": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "obdScannerService": { "type": "boolean" },
+        "averageRating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "imageUrl": { "type": "string", "format": "uri" }
+      },
+      "required": ["id", "ownerId", "name", "address", "contactNumber", "email", "latitude", "longitude"]
+    },
+    "Service": {
+      "title": "Service",
+      "type": "object",
+      "description": "Represents a service offered by a workshop.",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" }
+      },
+      "required": ["id", "name", "price"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "type": "object",
+      "description": "Represents an appointment booking.",
+      "properties": {
+        "id": { "type": "string" },
+        "workshopId": { "type": "string" },
+        "workshopName": { "type": "string" },
+        "userId": { "type": "string" },
+        "vehicleId": { "type": "string" },
+        "vehicleName": { "type": "string" },
+        "appointmentDateTime": { "type": "string", "format": "date-time" },
+        "description": { "type": "string" },
+        "status": { "type": "string", "enum": ["scheduled", "completed", "cancelled"] }
+      },
+      "required": ["workshopId", "userId", "vehicleId", "appointmentDateTime", "status"]
+    },
+    "Review": {
+        "title": "Review",
+        "type": "object",
+        "description": "A review for a workshop.",
+        "properties": {
+            "id": { "type": "string" },
+            "workshopId": { "type": "string" },
+            "userId": { "type": "string" },
+            "rating": { "type": "number" },
+            "comment": { "type": "string" },
+            "createdAt": { "type": "string", "format": "date-time" },
+            "authorName": { "type": "string" }
+        },
+        "required": ["workshopId", "userId", "rating", "comment", "createdAt"]
+    },
+    "Vehicle": {
+        "title": "Vehicle",
+        "type": "object",
+        "description": "Represents a user's vehicle.",
+        "properties": {
+            "id": { "type": "string" },
+            "userId": { "type": "string" },
+            "type": { "type": "string" },
+            "brand": { "type": "string" },
+            "model": { "type": "string" },
+            "year": { "type": "number" },
+            "vin": { "type": "string" },
+            "licensePlate": { "type": "string" },
+            "price": { "type": "number" },
+            "currentMileage": { "type": "number" },
+            "imageUrls": { "type": "array", "items": { "type": "string", "format": "uri" } },
+            "isForSale": { "type": "boolean" },
+            "country": { "type": "string" },
+            "sellerName": { "type": "string" },
+            "sellerWhatsapp": { "type": "string" },
+            "certificateNumber": { "type": "string" }
+        },
+        "required": ["id", "userId", "brand", "model", "year", "isForSale", "country", "sellerName"]
+    },
+    "OilChange": {
+      "title": "Oil Change",
+      "type": "object",
+      "description": "Represents an oil change record.",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "vehicleId": { "type": "string" },
+        "vehicleName": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "oilType": { "type": "string" },
+        "oilPrice": { "type": "number" },
+        "mileage": { "type": "number" },
+        "nextChangeMileage": { "type": "number" }
+      },
+      "required": ["id", "userId", "vehicleId", "date", "oilType", "oilPrice", "mileage", "nextChangeMileage"]
+    },
+    "FavoriteWorkshop": {
+      "title": "Favorite Workshop",
+      "type": "object",
+      "description": "A workshop saved as favorite by a user.",
+      "properties": {
+        "workshopId": { "type": "string" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "averageRating": { "type": "number" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workshopId", "name", "address", "addedAt"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "schema": { "$ref": "#/entities/UserProfile" },
+          "description": "Stores user profile data."
+        }
+      },
+      {
+        "path": "/users/{userId}/vehicles/{vehicleId}",
+        "definition": {
+            "schema": { "$ref": "#/entities/Vehicle" },
+            "description": "Stores vehicles owned by a user."
+        }
+      },
+      {
+        "path": "/users/{userId}/oilChanges/{oilChangeId}",
+        "definition": {
+          "schema": { "$ref": "#/entities/OilChange" },
+          "description": "Stores oil change history for a user's vehicles."
+        }
+      },
+      {
+        "path": "/users/{userId}/favorites/{workshopId}",
+        "definition": {
+          "schema": { "$ref": "#/entities/FavoriteWorkshop" },
+          "description": "Stores user's favorite workshops."
+        }
+      },
+      {
+        "path": "/workshops/{workshopId}",
+        "definition": {
+          "schema": { "$ref": "#/entities/Workshop" },
+          "description": "Stores public workshop data."
+        }
+      },
+      {
+        "path": "/workshops/{workshopId}/services/{serviceId}",
+        "definition": {
+          "schema": { "$ref": "#/entities/Service" },
+          "description": "Stores services for a specific workshop."
+        }
+      },
+      {
+        "path": "/workshops/{workshopId}/reviews/{userId}",
+        "definition": {
+          "schema": { "$ref": "#/entities/Review" },
+          "description": "Stores reviews for a workshop, keyed by user ID."
+        }
+      },
+      {
+        "path": "/appointments/{appointmentId}",
+        "definition": {
+          "schema": { "$ref": "#/entities/Appointment" },
+          "description": "Stores all appointments."
+        }
+      },
+      {
+        "path": "/marketplace/{vehicleId}",
+        "definition": {
+            "schema": { "$ref": "#/entities/Vehicle" },
+            "description": "Stores vehicles listed for sale."
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-image",
+      "description": "Un taller mecánico profesional de alta gama, limpio y moderno con elevadores de vehículos y herramientas de precisión organizadas.",
+      "imageUrl": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?q=80&w=2070",
+      "imageHint": "professional workshop"
+    },
+    {
+      "id": "login-background",
+      "description": "Un escáner de diagnóstico automotriz profesional OBDII mostrando datos técnicos en tiempo real en la pantalla de un vehículo.",
+      "imageUrl": "https://images.unsplash.com/photo-1632733711679-5292d686366b?q=80&w=2070",
+      "imageHint": "automotive diagnostic"
+    },
+    {
+      "id": "vehicle-registration-background",
+      "description": "Primer plano de un puerto OBD-II en un automóvil con un dispositivo de escaneo inteligente conectado.",
+      "imageUrl": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2070",
+      "imageHint": "car engine tech"
+    },
+    {
+      "id": "workshop-1",
+      "description": "Interior de un taller mecánico moderno y limpio con herramientas de diagnóstico avanzadas.",
+      "imageUrl": "https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?q=80&w=2070",
+      "imageHint": "auto repair"
+    },
+    {
+      "id": "workshop-2",
+      "description": "Mecánico trabajando con una tablet conectada al sistema computarizado del vehículo.",
+      "imageUrl": "https://images.unsplash.com/photo-1604068105030-06d82bb48fd1?q=80&w=2070",
+      "imageHint": "mechanic car"
+    }
+  ]
+}
